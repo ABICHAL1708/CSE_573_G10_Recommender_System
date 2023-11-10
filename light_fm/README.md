@@ -4,15 +4,15 @@
 ## Official code
 Install lightfm
 ```
-	pip install lightfm
+pip install lightfm
 ```
 Run the official code
 ```
-	python light_fm_official.py
+python light_fm_official.py
 ```
 
 ## Our Implementation from scratch
 Simply run the code
 ```
-	python light_fm.py
+python light_fm.py
 ```

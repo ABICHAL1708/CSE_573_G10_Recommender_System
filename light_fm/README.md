@@ -2,8 +2,6 @@
 2 methods have been used here. Firstly, implementing the code presented in the official github code of lightfm(https://github.com/lyst/lightfm/tree/master). Second the implementation of lightfm from scratch.
 
 ## Official code
->Edit the official code implementation.
-
 >Check and understand the various losses being used, mostly logistic will not be used as the task is not that of binary prediction.
 
 >Mainly check the losses of WARP and BPR.
@@ -12,6 +10,8 @@
 Install lightfm.
 
 > Understand how 'item_features', 'item_feature_labels', 'item_labels' are created.
+
+> Understand the code on Building datasets for creating the required dataset out of movielens.
 
 ```
 pip install lightfm
@@ -22,7 +22,9 @@ python light_fm_official.py
 ```
 
 ## Our Implementation from scratch
-Simply run the code
+>Simply copy paste the basic implementation of Building the dataset from the Official code.
+>Understand the concept of +ve and -ve usage in lightfm.
+Run the code
 ```
 python light_fm.py
 ```

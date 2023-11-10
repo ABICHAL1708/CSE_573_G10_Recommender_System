@@ -13,7 +13,7 @@ base_path = "/Users/abichalghosh/Documents/1-3/SWM/Project"
 official_movielens_data = fetch_movielens()
 
 print(official_movielens_data.keys())
-print(official_movielens_data["item_labels"])
+print(official_movielens_data["train"])
 
 def preprocess_data(data_dir):
 	# EDIT

@@ -4,4 +4,6 @@
 ## Official code
 Install lightfm
 > pip install lightfm
-> pip3 install lightfm
+```
+check
+```

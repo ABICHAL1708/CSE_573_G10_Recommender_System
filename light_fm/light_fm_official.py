@@ -1,10 +1,13 @@
+import sys
+import os
+import pandas as pd
+
 # Import the model
 from lightfm import LightFM
 from lightfm.datasets import fetch_movielens
 from lightfm.evaluation import precision_at_k
 from lightfm.evaluation import auc_score
-import sys
-import os
+from lightfm.data import Dataset
 
 # Adding the base dir as path
 base_path = "/Users/abichalghosh/Documents/1-3/SWM/Project"
@@ -13,13 +16,7 @@ base_path = "/Users/abichalghosh/Documents/1-3/SWM/Project"
 official_movielens_data = fetch_movielens()
 
 print(official_movielens_data.keys())
-print(official_movielens_data["train"])
-
-def preprocess_data(data_dir):
-	# EDIT
-	data_dir = base_path+"/"+data_dir
-	print(os.listdir(data_dir))
-	return " "
+print(official_movielens_data["item_features"])
 
 # Loading the downloaded movielens dataset
 data_dir = "datasets/movielens_dataset/ml-1m"
@@ -30,7 +27,8 @@ movielens_data = official_movielens_data
 
 # Check the dataset
 print("The movielens datset loaded is a dict with the following keys:")
-print(movielens_data.keys())
+# print(movielens_data.keys())
+# print(movielens_data["train"])
 
 train = movielens_data['train']
 test = movielens_data['test']

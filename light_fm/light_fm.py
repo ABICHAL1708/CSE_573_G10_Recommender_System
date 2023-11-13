@@ -7,6 +7,8 @@ from lightfm import LightFM
 from lightfm.datasets import fetch_movielens
 from lightfm.evaluation import precision_at_k
 from lightfm.evaluation import auc_score
+from lightfm.evaluation import recall_at_k
+from lightfm.evaluation import reciprocal_rank
 
 def create_model(train_data, loss_function, pickle_file):
   model = LightFM(learning_rate=0.05, loss=loss_function)
@@ -15,14 +17,22 @@ def create_model(train_data, loss_function, pickle_file):
 
 def evaluate_model(train_data, test_data, pickle_file):
   model = pickle.load(open(pickle_file, 'rb'))
-  train_precision = precision_at_k(model, train_data, k=10).mean()
-  test_precision = precision_at_k(model, test_data, k=10).mean()
+  train_precision = precision_at_k(model, train_data).mean()
+  test_precision = precision_at_k(model, test_data).mean()
 
   train_auc = auc_score(model, train_data).mean()
   test_auc = auc_score(model, test_data).mean()
 
+  train_recall = recall_at_k(model, train_data).mean()
+  test_recall = recall_at_k(model, test_data).mean()
+
+  train_rank = reciprocal_rank(model, train_data).mean()
+  test_rank = reciprocal_rank(model, test_data).mean()
+
   print('Precision: train %.2f, test %.2f.' % (train_precision, test_precision))
   print('AUC: train %.2f, test %.2f.' % (train_auc, test_auc))
+  print('Recall: train %.2f, test %.2f.' % (train_recall, test_recall))
+  print('Rank: train %.2f, test %.2f.' % (train_rank, test_rank))
 
 def create_embeddings():
   pass

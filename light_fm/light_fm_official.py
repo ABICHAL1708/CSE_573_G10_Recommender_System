@@ -1,6 +1,8 @@
 import sys
 import os
 import pandas as pd
+import scipy
+from scipy import sparse
 
 # Import the model
 from lightfm import LightFM
@@ -17,6 +19,19 @@ official_movielens_data = fetch_movielens()
 
 print(official_movielens_data.keys())
 print(official_movielens_data["item_features"])
+
+import os
+import zipfile
+import csv
+import requests
+import json
+from itertools import islice
+from lightfm.data import Dataset
+
+
+def create_features(data_dir):
+	ratings = csv.DictReader(x for x in open("ratings.csv"))
+	movie_features = csv.DictReader(x for x in open("books.csv"))
 
 def preprocess_data(data_dir):
 	# EDIT

@@ -16,6 +16,9 @@ Install lightfm.
 ```
 pip install lightfm
 ```
+```
+pip install git+https://github.com/maciejkula/spotlight.git
+```
 Run the official code
 ```
 python light_fm_official.py

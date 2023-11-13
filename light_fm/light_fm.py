@@ -14,7 +14,7 @@ from spotlight.datasets import movielens
 
 def create_model(train_data, loss_function, pickle_file):
   model = LightFM(learning_rate=0.05, loss=loss_function)
-  %time model.fit(train_data, epochs=10, num_threads=4, verbose=True)
+  model.fit(train_data, epochs=10, num_threads=6, verbose=True)
   pickle.dump(model, open(pickle_file, 'wb'))
 
 def evaluate_model(train_data, test_data, pickle_file):
@@ -36,7 +36,7 @@ def evaluate_model(train_data, test_data, pickle_file):
   print('Recall: train %.2f, test %.2f.' % (train_recall, test_recall))
   print('Rank: train %.2f, test %.2f.' % (train_rank, test_rank))
 
-def create_embeddings():
+def create_features():
   pass
 
 def build_recommender(name):

@@ -18,51 +18,7 @@ base_path = "/Users/abichalghosh/Documents/1-3/SWM/Project"
 official_movielens_data = fetch_movielens()
 
 print(official_movielens_data.keys())
-print(official_movielens_data["item_features"])
-
-import os
-import zipfile
-import csv
-import requests
-import json
-from itertools import islice
-from lightfm.data import Dataset
-
-
-def create_features(data_dir):
-	ratings = csv.DictReader(x for x in open("ratings.csv"))
-	movie_features = csv.DictReader(x for x in open("books.csv"))
-
-def preprocess_data(data_dir):
-	# EDIT
-	data_dir = base_path+"/"+data_dir
-	print("===========================================")
-	print("Preprocessing the Data")
-	print("===========================================")
-	print("The files present in the data directory are given as-")
-	print(os.listdir(data_dir))
-
-	movie_columns = ['movie_id', 'title', 'genres']
-	movies = pd.read_table(data_dir+"/movies.dat", sep = "::", header = None, names = movie_columns, encoding = "latin-1")
-
-	rating_columns = ['user_id', 'movie_id', 'rating', 'timestamp']
-	ratings = pd.read_table(data_dir+"/ratings.dat", sep = "::", header = None, names = rating_columns, encoding = "latin-1")
-
-	user_columns = ['user_id', 'gender', 'age', 'occupation', 'zip']
-	users = pd.read_table(data_dir+"/users.dat", sep = "::", header = None, names = user_columns, encoding = "latin-1")
-
-	# Preprocessing the ratings 
-	print(ratings)
-
-	# Creating the dataset object
-	dataset = Dataset()
-
-	
-	return " "
-
-# Loading the downloaded movielens dataset
-data_dir = "datasets/movielens_dataset/ml-1m"
-movielens_data = preprocess_data(data_dir)
+# print(official_movielens_data["item_features"])
 
 # Setting the official dataset here
 movielens_data = official_movielens_data
@@ -74,10 +30,11 @@ print("The movielens datset loaded is a dict with the following keys:")
 
 train = movielens_data['train']
 test = movielens_data['test']
+item_features = movielens_data['item_features']
 
 # Instantiating the model on BPR loss
-model = LightFM(learning_rate=0.05, loss='bpr')
-model.fit(train, epochs=10)
+model = LightFM(learning_rate=0.1, loss='warp')
+model.fit(train, epochs=30, item_features = item_features)
 
 train_precision = precision_at_k(model, train, k=10).mean()
 test_precision = precision_at_k(model, test, k=10).mean()

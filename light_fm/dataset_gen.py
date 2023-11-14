@@ -32,13 +32,13 @@ def create_features(data_dir):
 	print("Loading ratings, movies and users")
 	ratings = pd.read_csv(data_dir+"/ratings.csv")
 	movies = pd.read_csv(data_dir+"/movies.csv")
-	users = pd.read_csv(data_dir+"/users.csv")
+	# users = pd.read_csv(data_dir+"/users.csv")
 
 	# Drop first column
 	print("Dropping the first columns")
 	ratings = ratings.drop(columns = ["Unnamed: 0"])
 	movies = movies.drop(columns = ["Unnamed: 0"])
-	users = users.drop(columns = ["Unnamed: 0"])
+	# users = users.drop(columns = ["Unnamed: 0"])
 
 
 	print("===========================================")
@@ -49,7 +49,7 @@ def create_features(data_dir):
 	print("Merging data with genres and occupations columns:")
 	data = data.merge(movies[['movie_id', 'genres']], left_on='movie_id', right_on='movie_id')
 
-	data = data.merge(users[['user_id', 'occupation']], left_on='user_id', right_on='user_id')
+	# data = data.merge(users[['user_id', 'occupation']], left_on='user_id', right_on='user_id')
 
 	print("Checking Random Samples of merged data:")
 	print(data.sample(5, random_state=42))
@@ -67,25 +67,26 @@ def create_features(data_dir):
 			movies_genre_dict[genre] = 0
 
 	all_movie_genre = sorted(list(movies_genre_dict.keys()))
-	all_occupations = sorted(list(set(users['occupation'])))
+	# all_occupations = sorted(list(set(users['occupation'])))
 
 	# Creating Dataset object and fitting
 	dataset = Dataset()
-	dataset.fit(data['user_id'], data['movie_id'], item_features = all_movie_genre, user_features = all_occupations)
+	# dataset.fit(data['user_id'], data['movie_id'], item_features = all_movie_genre, user_features = all_occupations)
+	dataset.fit(data['user_id'], data['movie_id'], item_features = all_movie_genre)
 
 	# Retreiving all Item and User features
 	item_features = dataset.build_item_features((x, y) for x,y in zip(data.movie_id, movie_genre))
 
-	user_features = dataset.build_user_features((x, [y]) for x,y in zip(data['user_id'], data['occupation']))
+	# user_features = dataset.build_user_features((x, [y]) for x,y in zip(data['user_id'], data['occupation']))
 
 	# Check item and user features
 	print("Type of Item and User Features:")
 	print(type(item_features))
-	print(type(user_features))
+	# print(type(user_features))
 
 	# Saving the item and user feature matrices
 	sparse.save_npz(data_dir+"/item_features.npz", item_features)
-	sparse.save_npz(data_dir+"/user_features.npz", user_features)
+	# sparse.save_npz(data_dir+"/user_features.npz", user_features)
 
 	print("===========================================")
 	print("Creating Interaction Matrix")
@@ -111,40 +112,49 @@ def create_csv(data_dir):
 	# Check if movies.csv, ratings.csv and users.csv already present
 	file_list = os.listdir(data_dir)
 	if("movies.csv" not in file_list):
-		# Load Movies.dat
-		movie_columns = ['movie_id', 'title', 'genres']
-		movies = pd.read_table(data_dir+"/movies.dat", sep = "::", header = None, names = movie_columns, encoding = "latin-1")
+		if("movies.dat" in file_list):
+			# Load Movies.dat
+			movie_columns = ['movie_id', 'title', 'genres']
+			movies = pd.read_table(data_dir+"/movies.dat", sep = "::", header = None, names = movie_columns, encoding = "latin-1")
 
-		# Save movies data to csv
-		movies.to_csv(data_dir+"/movies.csv")
+			# Save movies data to csv
+			movies.to_csv(data_dir+"/movies.csv")
+		else:
+			print("movies.dat not found")
 
 	if("ratings.csv" not in file_list):
-		# Load Ratings.dat
-		rating_columns = ['user_id', 'movie_id', 'rating', 'timestamp']
-		ratings = pd.read_table(data_dir+"/ratings.dat", sep = "::", header = None, names = rating_columns, encoding = "latin-1")
+		if("ratings.dat" in file_list):
+			# Load Ratings.dat
+			rating_columns = ['user_id', 'movie_id', 'rating', 'timestamp']
+			ratings = pd.read_table(data_dir+"/ratings.dat", sep = "::", header = None, names = rating_columns, encoding = "latin-1")
 
-		# Save ratings to csv
-		ratings.to_csv(data_dir+"/ratings.csv")
+			# Save ratings to csv
+			ratings.to_csv(data_dir+"/ratings.csv")
+		else:
+			print("ratings.dat not found")
 
 	if("users.csv" not in file_list):
-		# Load users.dat
-		user_columns = ['user_id', 'gender', 'age', 'occupation', 'zip']
-		users = pd.read_table(data_dir+"/users.dat", sep = "::", header = None, names = user_columns, encoding = "latin-1")
+		if("users.dat" in file_list):
+			# Load users.dat
+			user_columns = ['user_id', 'gender', 'age', 'occupation', 'zip']
+			users = pd.read_table(data_dir+"/users.dat", sep = "::", header = None, names = user_columns, encoding = "latin-1")
 
-		# Save users to csv
-		users.to_csv(data_dir+"/users.csv")
+			# Save users to csv
+			users.to_csv(data_dir+"/users.csv")
+		else:
+			print("users.dat not found")
 
-# 1m
-data_dir = "datasets/ml-1m"
-create_csv(data_dir)
-create_features(data_dir)
+# # 1m
+# data_dir = "datasets/ml-1m"
+# create_csv(data_dir)
+# create_features(data_dir)
 
 # 10m
 data_dir = "datasets/ml-10m"
 create_csv(data_dir)
 create_features(data_dir)
 
-# 20m
-data_dir = "datasets/ml-20m"
-create_csv(data_dir)
-create_features(data_dir)
+# # 20m
+# data_dir = "datasets/ml-20m"
+# create_csv(data_dir)
+# create_features(data_dir)

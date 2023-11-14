@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 
 from lightfm import LightFM
+from lightfm.datasets import fetch_movielens
 from lightfm.cross_validation import random_train_test_split
 from lightfm.evaluation import precision_at_k
 from lightfm.evaluation import auc_score
@@ -42,9 +43,15 @@ def evaluate_model(train_data, test_data, item_features, pickle_file):
 	print('Rank: train %.2f, test %.2f.' % (train_rank, test_rank))
 
 def build_recommender(name):
-	data = sparse.load_npz("interactions.npz")
-	item_features = sparse.load_npz("item_features.npz")
-	train, test = random_train_test_split(data, random_state=np.random.RandomState(SEED))
+	if(name=='100K'):
+		data = fetch_movielens()
+		item_features = data['item_features']
+		train = data['train']
+		test = data['test']
+	else:
+		data = sparse.load_npz("interactions.npz")
+		item_features = sparse.load_npz("item_features.npz")
+		train, test = random_train_test_split(data, random_state=np.random.RandomState(SEED))
 
 	# loss_types= ['bpr', 'warp']
 	loss_types = ['warp']
@@ -55,7 +62,7 @@ def build_recommender(name):
 		evaluate_model(train, test, item_features, pickle_name)
 
 # datasets = ['100K', '1M', '10M', '20M']
+datasets = ['100K', '1M']
 
-# for dataset in datasets:
-# 	build_recommender(dataset)
-build_recommender('1M')
+for dataset in datasets:
+	build_recommender(dataset)

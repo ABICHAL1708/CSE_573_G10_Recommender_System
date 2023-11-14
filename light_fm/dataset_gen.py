@@ -14,7 +14,7 @@ from lightfm.data import Dataset
 
 
 # Adding the base dir
-base_path = "./.."
+base_path = ""
 
 # Setting constant seed for reproducibility
 SEED = 42

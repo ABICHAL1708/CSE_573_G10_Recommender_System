@@ -3,6 +3,7 @@ import os
 import csv
 import requests
 import json
+import itertools
 from itertools import islice
 import scipy
 from scipy import sparse
@@ -19,11 +20,88 @@ base_path = "./.."
 SEED = 42
 
 def create_features(data_dir):
-	pass
+	print("===========================================")
+	print("Loading and Preprocessing the Data")
+	print("===========================================")
+	data_dir = base_path+"/"+data_dir
+
+	# Preprocessing for Datset
+	# Creating Ratings, Movies and Users dictreader
+	print("Preprocessing for dataset")
+
+	print("Loading ratings, movies and users")
+	ratings = pd.read_csv(data_dir+"/ratings.csv")
+	movies = pd.read_csv(data_dir+"/movies.csv")
+	users = pd.read_csv(data_dir+"/users.csv")
+
+	# Drop first column
+	print("Dropping the first columns")
+	ratings = ratings.drop(columns = ["Unnamed: 0"])
+	movies = movies.drop(columns = ["Unnamed: 0"])
+	users = users.drop(columns = ["Unnamed: 0"])
+
+
+	print("===========================================")
+	print("Creating Features")
+	print("===========================================")
+	# Adding genres and occupations columns to data
+	data = ratings
+	print("Merging data with genres and occupations columns:")
+	data = data.merge(movies[['movie_id', 'genres']], left_on='movie_id', right_on='movie_id')
+
+	data = data.merge(users[['user_id', 'occupation']], left_on='user_id', right_on='user_id')
+
+	print("Checking Random Samples of merged data:")
+	print(data.sample(5, random_state=42))
+
+	# Getting all the genres for movie ids in data
+	movie_genre = [x.split('|') for x in data["genres"]]	
+
+	# Listing all unique genres and Occupation
+	movies_genre_list = movies["genres"].tolist()
+	movies_genre_dict = {}
+
+	for genres in movies_genre_list:
+		genres = genres.split("|")
+		for genre in genres:
+			movies_genre_dict[genre] = 0
+
+	all_movie_genre = sorted(list(movies_genre_dict.keys()))
+	all_occupations = sorted(list(set(users['occupation'])))
+
+	# Creating Dataset object and fitting
+	dataset = Dataset()
+	dataset.fit(data['user_id'], data['movie_id'], item_features = all_movie_genre, user_features = all_occupations)
+
+	# Retreiving all Item and User features
+	item_features = dataset.build_item_features((x, y) for x,y in zip(data.movie_id, movie_genre))
+
+	user_features = dataset.build_user_features((x, [y]) for x,y in zip(data['user_id'], data['occupation']))
+
+	# Check item and user features
+	print("Type of Item and User Features:")
+	print(type(item_features))
+	print(type(user_features))
+
+	# Saving the item and user feature matrices
+	sparse.save_npz(data_dir+"/item_features.npz", item_features)
+	sparse.save_npz(data_dir+"/user_features.npz", user_features)
+
+	print("===========================================")
+	print("Creating Interaction Matrix")
+	print("===========================================")
+	# Using the first 3 columns for 
+	print(data.iloc[:, 0:3])
+
+	interactions, weights2 = dataset.build_interactions(data.iloc[:, 0:3].values)
+
+	print("Type of Interactions")
+	print(type(interactions))
+	sparse.save_npz(data_dir+"/interactions.npz", interactions)
 
 def create_csv(data_dir):
 	print("===========================================")
-	print("Splitting the Data")
+	print("Saving the Data")
 	print("===========================================")
 	data_dir = base_path+"/"+data_dir
 
@@ -56,6 +134,17 @@ def create_csv(data_dir):
 		# Save users to csv
 		users.to_csv(data_dir+"/users.csv")
 
-
+# 1m
 data_dir = "datasets/ml-1m"
 create_csv(data_dir)
+create_features(data_dir)
+
+# 10m
+data_dir = "datasets/ml-10m"
+create_csv(data_dir)
+create_features(data_dir)
+
+# 20m
+data_dir = "datasets/ml-20m"
+create_csv(data_dir)
+create_features(data_dir)

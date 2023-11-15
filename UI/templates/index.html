@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Movie Recommendations App</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <script src="{{ url_for('static', filename='js/call_engine.js') }}"></script>
+    </head>
+    <body>
+
+        <h2>Input Page</h2>
+
+        <!-- <form id="inputForm">
+            <label for="inputText">Enter something:</label>
+            <input type="text" id="inputText" name="inputValue" placeholder="Type something...">
+            <button type="button" onclick="sendInput()">Enter</button> -->
+
+            <form id="inputForm" onsubmit="event.preventDefault();" role="search">
+            
+                <div class="dropdown">
+                    <button class="dropbtn" id="dropdownButton">Engine</button>
+                    <div class="dropdown-content">
+                    <a href="#" onclick="selectOption('Matrix Factorisation')">Matrix Factorisation</a>
+                    <a href="#" onclick="selectOption('Two Towers')">Two Towers</a>
+                    <a href="#" onclick="selectOption('LightFM')">LightFM</a>
+                    </div>
+                </div>
+
+                <input id="inputText" type="search" placeholder="Search..." autofocus required />   
+                <button type="button" onclick="sendInput()" style="color: black;" id="submitButton">Enter</button>                
+            </form>
+
+        <!-- </form> -->
+        <div id="result"></div>
+    </body>
+</html>

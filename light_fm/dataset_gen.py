@@ -23,7 +23,7 @@ def create_features(data_dir):
 	print("===========================================")
 	print("Loading and Preprocessing the Data")
 	print("===========================================")
-	data_dir = base_path+"/"+data_dir
+	# data_dir = base_path+"/"+data_dir
 
 	# Preprocessing for Datset
 	# Creating Ratings, Movies and Users dictreader
@@ -104,7 +104,7 @@ def create_csv(data_dir):
 	print("===========================================")
 	print("Saving the Data")
 	print("===========================================")
-	data_dir = base_path+"/"+data_dir
+	# data_dir = base_path+"/"+data_dir
 
 	print("Data files are:")
 	print(os.listdir(data_dir))
@@ -149,12 +149,17 @@ def create_csv(data_dir):
 # create_csv(data_dir)
 # create_features(data_dir)
 
-# 10m
-data_dir = "datasets/ml-10m"
-create_csv(data_dir)
-create_features(data_dir)
+# # 10m
+# data_dir = "datasets/ml-10m"
+# create_csv(data_dir)
+# create_features(data_dir)
 
 # # 20m
 # data_dir = "datasets/ml-20m"
 # create_csv(data_dir)
 # create_features(data_dir)
+
+# # ml-demo
+data_dir = "datasets/ml-demo"
+create_csv(data_dir)
+create_features(data_dir)

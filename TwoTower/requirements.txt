@@ -1,6 +1,0 @@
-gensim
-matplotlib
-numpy
-pandas
-tensorflow==2.15.0
-tensorflow-recommenders==0.7.3

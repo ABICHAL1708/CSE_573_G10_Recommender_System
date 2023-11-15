@@ -5,11 +5,61 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import gensim.downloader
 from ast import literal_eval
 from collections import Counter, OrderedDict
 
 import tensorflow_recommenders as tfrs
+from gensim.parsing.preprocessing import strip_multiple_whitespaces, remove_stopwords, split_alphanum, strip_non_alphanum, strip_punctuation
+
 import datetime
+
+word2vec = gensim.downloader.load('glove-twitter-25')
+
+with open('metadata.json', 'r') as f:
+    metadata = json.load(f)
+
+all_users = [str(int(i)) for i in metadata['users']]
+all_movies = [str(int(i)) for i in metadata['movies']]
+all_cities = metadata['cities']
+all_states = metadata['states']
+all_ages = [str(int(i)) for i in metadata['ages']]
+all_occupations = [str(int(i)) for i in metadata['occupations']]
+all_genres = metadata['genres']
+title_emb_len = metadata['title_emb_size']
+na_value = metadata['string_na']
+
+
+ratings = pd.read_csv("data/ratings.csv")
+users = pd.read_csv("data/users.csv")
+movies = pd.read_csv("data/movies.csv")
+
+movies[['title', 'movie_year', 'genres']] = movies.apply(lambda row: pd.Series({
+    'title': row['title'][:-7],
+    'movie_year': row['title'][-5:-1],
+    'genres': str(row['genres']).split('|') if not pd.isnull(row['genres']) else list()
+}), axis=1)
+
+
+def user_features(row):
+    zip_code = int(str(row['zip'])[:5]) if not pd.isnull(row['zip']) else 0
+    try:
+        z = zip_code_search.by_zipcode(zip_code).to_dict()
+        return pd.Series({
+            'gender': int(row['gender'] == 'F'),
+            'city': z.get('major_city', ''),
+            'state': z.get('state', ''),
+            'zip': zip_code
+        })
+    except:
+        return pd.Series({
+            'gender': int(row['gender'] == 'F'),
+            'city': 'XX',
+            'state': 'XX',
+            'zip': zip_code
+        })
+
+users[['gender', 'city', 'state', 'zip']] = users.apply(user_features, axis=1)
 
 
 
@@ -129,6 +179,10 @@ loaded_model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=learning_r
 
 loaded_model.built = True
 loaded_model.load_weights("model_val_weights.h5")
+
+def genre_as_feature_name(genre): 
+    # Here we remove any non-alphanumeric characters from the genre's name, and add a 'genre_' suffix to it
+    return 'genre_'+re.sub('[\W_]+', '', genre.lower())
 
 
 def convert_to_dataset(df):

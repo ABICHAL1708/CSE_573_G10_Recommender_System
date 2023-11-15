@@ -7,6 +7,7 @@ import itertools
 from itertools import islice
 import scipy
 from scipy import sparse
+import json
 
 # Lightfm libraries
 import lightfm
@@ -100,6 +101,25 @@ def create_features(data_dir):
 	print(type(interactions))
 	sparse.save_npz(data_dir+"/interactions.npz", interactions)
 
+	print("===========================================")
+	print("Checking User/Movie Mappings")
+	print("===========================================")
+	print("Getting the mappings")
+	uid_map, ufeature_map, iid_map, ifeature_map = dataset.mapping()
+
+	print("The type of uid_map is: ")
+	print(type(uid_map))
+
+	print("Saving the uid, iid, and ifeatures mappings")
+
+	with open(data_dir+"/uid_map.json", "w") as outfile:
+		json.dump(uid_map, outfile)
+	with open(data_dir+"/iid_map.json", "w") as outfile:
+		json.dump(iid_map, outfile)
+	with open(data_dir+"/ifeature_map.json", "w") as outfile:
+		json.dump(ifeature_map, outfile)
+
+
 def create_csv(data_dir):
 	print("===========================================")
 	print("Saving the Data")
@@ -159,7 +179,7 @@ def create_csv(data_dir):
 # create_csv(data_dir)
 # create_features(data_dir)
 
-# # ml-demo
+# ml-demo
 data_dir = "datasets/ml-demo"
-create_csv(data_dir)
+# create_csv(data_dir)
 create_features(data_dir)

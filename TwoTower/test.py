@@ -34,6 +34,7 @@ ratings = pd.read_csv("data/ratings.csv")
 users = pd.read_csv("data/users.csv")
 movies = pd.read_csv("data/movies.csv")
 
+
 movies[['title', 'movie_year', 'genres']] = movies.apply(lambda row: pd.Series({
     'title': row['title'][:-7],
     'movie_year': row['title'][-5:-1],
@@ -230,18 +231,20 @@ def embbed_title(row):
 
 def get_recommendation(user_id, top=10):
     top10 = []
+    print(user_id)
+    # users = pd.read_csv("data/users.csv")
+    # movies = pd.read_csv("data/movies.csv")
     final_test_data = make_dataset([user_id], users, movies)
+    print(final_test_data)
     final_test_data = final_test_data.drop_duplicates().dropna()
     for name, group in final_test_data.groupby("userId"):
         test_df = convert_to_dataset(group)
         cached_test = test_df.batch(500).cache()
         preds = loaded_model.predict(cached_test)
         group["predicted_rating"] = preds
+        print('$')
         temp = group.sort_values(by='predicted_rating', axis=0, ascending=False).reset_index(drop=True)
         for movieid, rating in zip(temp.head(top)["movieId"].values.tolist(), temp.head(top)["predicted_rating"].values.tolist()):
+            print('#')
             top10.append(movies.loc[movies['movieId'] == movieid]["title"].values[0])
-        
         return top10
-    
-
-print(get_recommendation(42))
